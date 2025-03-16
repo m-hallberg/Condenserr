@@ -6,11 +6,10 @@ import logging
 import tvdb_v4_official
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
-#from datetime import datetime, timezone
+from datetime import datetime, timezone
 from tmdbv3api import TMDb, Movie
 from dotenv import load_dotenv
 from discord_webhook import DiscordWebhook, DiscordEmbed
-from models import Item, Episode, Test
 
 
 #Logging Setup
@@ -37,6 +36,39 @@ tvdb = tvdb_v4_official.TVDB(os.getenv('TVDB_API_KEY'))
 tmdb = TMDb()
 tmdb.api_key = os.getenv('TMDB_API_KEY')
 movie = Movie()
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    type = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(100))
+    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    tmdb_id = db.Column(db.String(100))
+    tvdb_id = db.Column(db.String(100))
+    img_url = db.Column(db.String(100))
+    local_url = db.Column(db.String(100))
+
+class Episode(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    series_id = db.Column(db.Integer, db.ForeignKey('item.id'))
+    series = db.relationship(
+        'Item',
+        backref=db.backref('episodes', lazy=True)
+    )
+    tvdb_id = db.Column(db.String(100))
+    tmdb_id = db.Column(db.String(100))
+    imdb_id = db.Column(db.String(100))
+    img_url = db.Column(db.String(100))
+    season = db.Column(db.Integer)
+    episode = db.Column(db.Integer)
+
+class Test(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    event = db.Column(db.String(100), nullable=False)
+    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
 def create_app():
     app = Flask(__name__)
