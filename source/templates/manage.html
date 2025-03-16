@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Condenserr Management</title>
+    <link rel="stylesheet" href="/css/bootstrap.css">
+</head>
+<body>
+    <form method="post" action="/manage">
+  <button type="submit" name="submit_button" value="Send" class="btn btn-primary">Send</button>
+  <button type="submit" name="submit_button" value="Clear" class="btn btn-primary">Clear</button>
+</form>
+
+<h2>Items Awaiting Notification</h2>
+
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      <th scope="col">Type</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for item in items %}
+      <tr>
+          <th scope="row">{{ item.id }}</th>
+          <td>{{ item.name }}</td>
+          <td>{{ item.type }}</td>
+          <td>{{ item.date_created }}</td>
+      </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+<script src="/js/bootstrap.js"></script>
+</body>
+</html>
