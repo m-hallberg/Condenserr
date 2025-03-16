@@ -6,10 +6,11 @@ import logging
 import tvdb_v4_official
 from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timezone
+#from datetime import datetime, timezone
 from tmdbv3api import TMDb, Movie
 from dotenv import load_dotenv
 from discord_webhook import DiscordWebhook, DiscordEmbed
+from models import Item, Episode, Test
 
 
 #Logging Setup
@@ -37,41 +38,6 @@ tmdb = TMDb()
 tmdb.api_key = os.getenv('TMDB_API_KEY')
 movie = Movie()
 
-
-
-
-class Item(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    type = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String(100))
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    tmdb_id = db.Column(db.String(100))
-    tvdb_id = db.Column(db.String(100))
-    img_url = db.Column(db.String(100))
-
-class Episode(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    series_id = db.Column(db.Integer, db.ForeignKey('item.id'))
-    series = db.relationship(
-        'Item',
-        backref=db.backref('episodes', lazy=True)
-    )
-    tvdb_id = db.Column(db.String(100))
-    tmdb_id = db.Column(db.String(100))
-    imdb_id = db.Column(db.String(100))
-    img_url = db.Column(db.String(100))
-    season = db.Column(db.Integer)
-    episode = db.Column(db.Integer)
-
-class Test(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    event = db.Column(db.String(100), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-
 def create_app():
     app = Flask(__name__)
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///condensrr.db'
@@ -93,7 +59,7 @@ def send_webhook():
     embed = DiscordEmbed(title='New Media Added!', description="New media has been added to the server! Check it out below to see what's new! Enjoy!")
     webhook.add_embed(embed)
     for item in Item.query.all():
-        embed = DiscordEmbed(title = item.name, description = item.description)
+        embed = DiscordEmbed(title = item.name, description = item.description, url = item.local_url)
         embed.set_thumbnail(item.img_url)
         if item.type == 'Series':
             all_episodes = {}
@@ -120,7 +86,8 @@ def webook_receive():
                 type=new_content['Item']['Type'],
                 tmdb_id=new_content['Item']['ProviderIds']['Tmdb'],
                 img_url="https://image.tmdb.org/t/p/original" + movie_lookup['poster_path'],
-                description=movie_lookup['overview']
+                description=movie_lookup['overview'],
+                local_url = "https://watch.mjstcmedia.me/web/index.html#!/item?id=" + new_content['Item']['Id'] + "&serverId=8276dc4e24854e8582535f961b85e2e7"
             )
             db.session.add(new_item)
             db.session.commit()
@@ -137,7 +104,10 @@ def webook_receive():
                     type='Series',
                     tvdb_id=episode_lookup['seriesId'],
                     img_url=series_lookup['image'],
-                    description=series_lookup['overview']
+                    description=series_lookup['overview'],
+                    local_url = "https://watch.mjstcmedia.me/web/index.html#!/item?id="
+                                + new_content['Item']['Id']
+                                + "&serverId=8276dc4e24854e8582535f961b85e2e7"
                 )
                 db.session.add(new_item)
                 db.session.commit()
