@@ -7,7 +7,7 @@ class Item(db.Model):
     name = db.Column(db.String(100), nullable=False)
     type = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(100))
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    date_created = db.Column(db.DateTime, default=datetime.now())
     tmdb_id = db.Column(db.String(100))
     tvdb_id = db.Column(db.String(100))
     img_url = db.Column(db.String(100))
@@ -16,7 +16,7 @@ class Item(db.Model):
 class Episode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.now(timezone.utc))
+    date_created = db.Column(db.DateTime, default=datetime.now())
     series_id = db.Column(db.Integer, db.ForeignKey('item.id'))
     series = db.relationship(
         'Item',

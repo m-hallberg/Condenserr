@@ -89,4 +89,4 @@ def manage():
             send_webhook()
             return redirect(url_for('backend.manage'))
     elif request.method == 'GET':
-        return render_template('manage.html', items=items, episodes=episodes)
+        return render_template('management.html', items=items, episodes=episodes)

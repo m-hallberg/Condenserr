@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Condenserr Management{% endblock %}
+
+{% block content %}
+
+
+    <h2>Items Awaiting Notification</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Type</th>
+                <th scope="col">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for item in items %}
+                <tr>
+                    <th scope="row">{{ item.id }}</th>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.type }}</td>
+                    <td>{{ item.date_created }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form method="post" action="/manage">
+        <button type="submit" name="submit_button" value="Send" class="btn btn-primary">Send</button>
+        <button type="submit" name="submit_button" value="Clear" class="btn btn-primary">Clear</button>
+    </form>
+
+{% endblock %}

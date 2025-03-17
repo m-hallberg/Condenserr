@@ -5,10 +5,11 @@ views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET'])
 def home():
-    return 'success', 200
+    return render_template('base.html')
 
 @views.route("/clearlog")
 def clearlog():
-    with open('app.log', 'w'):
+    with open('condenserr_debug.log', 'w'):
         pass
     return 'Debug Log Cleared', 200
+

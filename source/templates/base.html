@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Font families -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <script src="/js/bootstrap.bundle.js"></script>
+
+    {% include "navbar.html" %}
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
