@@ -7,6 +7,7 @@
 
     <h2>Items Awaiting Notification</h2>
 
+    <form method="post" action="/manage">
     <table class="table">
         <thead>
             <tr>
@@ -28,7 +29,7 @@
             {% endfor %}
         </tbody>
     </table>
-    <form method="post" action="/manage">
+
         <button type="submit" name="submit_button" value="Send" class="btn btn-primary">Send</button>
         <button type="submit" name="submit_button" value="Clear" class="btn btn-primary">Clear</button>
     </form>
